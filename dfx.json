@@ -1,0 +1,29 @@
+{
+  "canisters": {
+    "caesarCipherMotoko_backend": {
+      "main": "src/caesarCipherMotoko_backend/main.mo",
+      "type": "motoko"
+    },
+    "caesarCipherMotoko_frontend": {
+      "dependencies": [
+        "caesarCipherMotoko_backend"
+      ],
+      "frontend": {
+        "entrypoint": "src/caesarCipherMotoko_frontend/src/index.html"
+      },
+      "source": [
+        "src/caesarCipherMotoko_frontend/assets",
+        "dist/caesarCipherMotoko_frontend/"
+      ],
+      "type": "assets"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
