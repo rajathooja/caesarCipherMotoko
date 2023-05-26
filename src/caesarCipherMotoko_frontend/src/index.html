@@ -9,16 +9,33 @@
     <link type="text/css" rel="stylesheet" href="main.css" />
   </head>
   <body>
-    <main>
-      <img src="logo2.svg" alt="DFINITY logo" />
-      <br />
-      <br />
-      <form action="#">
-        <label for="name">Enter your name: &nbsp;</label>
-        <input id="name" alt="Name" type="text" />
-        <button type="submit">Click Me!</button>
-      </form>
-      <section id="greeting"></section>
-    </main>
+    <center>
+      <main>
+        <img src="logo2.svg" alt="DFINITY logo" />
+        <br />
+        <br />
+        <form action="#">
+          <!-- simple form for user to input message and offset-->
+          <label for="message">Enter your message: &nbsp;</label>
+          <input id="message" alt="Message" type="text" />
+          <br><br>
+
+          <label for="offset">Enter encryption offset: &nbsp;</label>
+          <input id="offset" alt="Offset" type="text" />
+          
+          <p>
+            <br><br>
+            <button type="submit">Encode!</button>
+            <button id="decode">Decode!</button>
+          </p>
+        </form>
+        <p>
+          
+            <!-- output area of the encoded / decoded message -->
+            <section id="processedOutput"></section>
+          
+        </p>
+      </main>
+    </center>
   </body>
 </html>
