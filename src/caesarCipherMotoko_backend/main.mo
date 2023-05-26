@@ -10,7 +10,7 @@ actor caesarCipher {
   var natOffset : Nat = 0;
   var strInput : Text = "";
   var strEncodedInput : Text = "";
-
+  
   // public function to encode the plain text input
   // returns a scrambled Text string
   public func encodeInput(plainText : Text) : async Text {
@@ -23,7 +23,7 @@ actor caesarCipher {
     strInput := plainText;
 
     // loop through each character of the input string, 
-    // offset each character based on the cipher key,
+    // shift each character based on the offset,
     // concatenate and return the encoded string
     label iterator for (charCurrent in strInput.chars()) {
 
@@ -53,7 +53,7 @@ actor caesarCipher {
         natNewCharIndex := natNewCharIndex - natKeyLength;
       };
 
-      // using the new position of the new character, we get that new character from the cipher key
+      // knowing the new position of the character, we get that new character from the cipher key
       charEncoded := getChar(strKey, natNewCharIndex);
 
       // concatenate the encoded character to our encoded string
@@ -65,8 +65,59 @@ actor caesarCipher {
     return strEncodedInput;
   };
 
+  // public function to decode the scrambled text input
+  // returns a descrambled Text string
+  public func decodeInput(scrambledText : Text) : async Text {
+    // initialize variables
+    var charEncoded : Char = ' ';
+    var intNewCharIndex : Int = 0;
+    var strEncodedInput : Text = "";
+
+    // assign the scrambled text input to a global variable for access by public query getter
+    strInput := scrambledText;
+
+    // loop through each character of the input string, 
+    // shift each character based on the offset,
+    // concatenate and return the decoded string
+    label iterator for (charCurrent in strInput.chars()) {
+
+      // if the current character being iterated over is a white space, 
+      // leave the space as is and continue to the next character
+      if (Char.isWhitespace(charCurrent)) {
+        strEncodedInput #= Char.toText(charCurrent);
+        continue iterator;
+      };
+
+      // determine the position index of the current character in the cipher key
+      var natCurrCharIndex : Nat = getIndex(strKey, charCurrent);
+
+      // subtract the offset from the current index to determine 
+      // the position (index) of the new (decoded) character we should return
+      intNewCharIndex := natCurrCharIndex - natOffset;
+
+      // if the new position is less than zero,
+      // wrap around to the end of the key by adding
+      // the key length to the negative position.
+      // this allows the beginning of the alphabet to be properly encoded 
+      // by wrapping backwards from 'a' to 'z'
+      if (intNewCharIndex < 0) {
+        intNewCharIndex := natKeyLength + intNewCharIndex;
+      };
+
+      // knowing the new position of the character, we get that new character from the cipher key
+      charEncoded := getChar(strKey, intNewCharIndex);
+
+      // concatenate the decoded character to our decoded string
+      strEncodedInput #= Char.toText(charEncoded);
+
+    };
+
+    // return the decoded string
+    return strEncodedInput;
+  };
+
   // private utility method to return a character at a given position (index) in a Text string
-  private func getChar(string : Text, index : Nat) : Char {
+  private func getChar(string : Text, index : Int) : Char {
     // initialize the counter
     var count : Nat = 0;
     // initialize our character to return
@@ -74,11 +125,13 @@ actor caesarCipher {
 
     // loop over each character in the supplied string
     label iterator for (c in Text.toIter(string)) {
+      
       // if the current loop count is equal to the supplied index,
       if (count == index) {
+        
         // we have found the character we are looking for, so assign it to our variable.
         myChar := c;
-        
+
         // exit the loop
         break iterator;
       };
@@ -100,6 +153,7 @@ actor caesarCipher {
     label iterator for (c in Text.toIter(string)) {
       // if the current character is equal to the supplied character
       if (c == myChar) {
+
         // we have found the character we are looking for, so exit the loop
         break iterator;
       };
